@@ -2,15 +2,15 @@ import { cva, VariantProps } from "class-variance-authority";
 import { forwardRef, HTMLAttributes } from "react";
 import { twMerge } from "tailwind-merge";
 
-export const variants = cva("", {
+export const variants = cva("lg:text-base text-sm", {
   variants: {
     variant: {
-      base: "",
-      light: "",
+      default: "text-text-50",
+      gray: "text-text-200",
     },
   },
   defaultVariants: {
-    variant: "base",
+    variant: "default",
   },
 });
 
@@ -19,9 +19,13 @@ interface TextProps
     VariantProps<typeof variants> {}
 
 export const Text = forwardRef<HTMLParagraphElement, TextProps>(
-  ({ className, variant, ...props }) => {
+  ({ className, variant, ...props }, ref) => {
     return (
-      <p className={twMerge(variants({ variant }), className)} {...props} />
+      <p
+        className={twMerge(variants({ variant }), className)}
+        {...props}
+        ref={ref}
+      />
     );
   }
 );
