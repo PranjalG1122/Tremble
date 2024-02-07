@@ -12,6 +12,21 @@ import type {
 
 const prisma = new PrismaClient();
 
+export const checkIfUserExists = async (username: string): Promise<boolean> => {
+  try {
+    const user = await prisma.user.findUniqueOrThrow({
+      where: {
+        username: username,
+      },
+    });
+
+    return user ? false : true;
+  } catch (e) {
+    console.error(e);
+    return false;
+  }
+};
+
 export const registerOptions = async (
   username: string
 ): Promise<PublicKeyCredentialCreationOptionsJSON | null> => {
@@ -21,7 +36,6 @@ export const registerOptions = async (
       rpID: process.env.RP_ID!,
       userID: crypto.randomUUID(),
       userName: username,
-      attestationType: "none",
       authenticatorSelection: {
         residentKey: "required",
         userVerification: "required",
@@ -42,7 +56,7 @@ export const registerOptions = async (
 
     return options;
   } catch (e) {
-    console.warn(e);
+    console.error(e);
     return null;
   }
 };
@@ -79,7 +93,7 @@ export const verifyOptions = async (
     }
     return false;
   } catch (e) {
-    console.warn(e);
+    console.error(e);
     return null;
   }
 };

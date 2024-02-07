@@ -38,7 +38,7 @@ export const genereateAuthOptions = async (
 
     return options;
   } catch (e) {
-    console.warn(e);
+    console.error(e);
     return null;
   }
 };
@@ -97,13 +97,15 @@ export const verifyAuthOptions = async (
         }
       );
 
-      cookie.set("token", token);
+      cookie.set("token", token, {
+        maxAge: 30 * 24 * 60 * 60,
+      });
 
       return true;
     }
     return false;
   } catch (e) {
-    console.warn(e);
+    console.error(e);
     return null;
   }
 };
