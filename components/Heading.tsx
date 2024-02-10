@@ -4,7 +4,7 @@ import { twMerge } from "tailwind-merge";
 
 export const variants = cva("", {
   variants: {
-    variant: {
+    size: {
       default: "lg:text-lg text-base font-medium",
       l: "lg:text-2xl text-xl font-semibold",
       xl: "lg:text-4xl text-2xl font-bold",
@@ -12,7 +12,7 @@ export const variants = cva("", {
     },
   },
   defaultVariants: {
-    variant: "default",
+    size: "default",
   },
 });
 
@@ -21,11 +21,11 @@ interface HeadingProps
     VariantProps<typeof variants> {}
 
 export const Heading = forwardRef<HTMLHeadingElement, HeadingProps>(
-  ({ className, variant, ...props }, ref) => {
+  ({ className, size, ...props }, ref) => {
     return (
       <h1
         ref={ref}
-        className={twMerge(variants({ variant }), className)}
+        className={twMerge(variants({ size, className }))}
         {...props}
       />
     );
