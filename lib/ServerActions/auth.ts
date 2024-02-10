@@ -19,7 +19,7 @@ export const genereateAuthOptions =
   async (): Promise<PublicKeyCredentialRequestOptionsJSON | null> => {
     try {
       const options = await generateAuthenticationOptions({
-        rpID: process.env.RP_ID || "localhost",
+        rpID: process.env.RP_ID,
         userVerification: "required",
       });
 
@@ -64,8 +64,8 @@ export const verifyAuthOptions = async (
       const verification = await verifyAuthenticationResponse({
         response: res,
         expectedChallenge: challenge.challenge,
-        expectedOrigin: "http://localhost:3000",
-        expectedRPID: process.env.RP_ID || "localhost",
+        expectedOrigin: process.env.EXPECTED_ORIGIN!,
+        expectedRPID: process.env.RP_ID!,
         authenticator: {
           credentialID: Buffer.from(auth.credentialID, "base64url"),
           credentialPublicKey: Buffer.from(
