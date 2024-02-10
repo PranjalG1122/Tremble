@@ -6,3 +6,47 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  createdAt DateTime @default(now())
+  auth      Auth[]
+
+  passwords    Passwords[]
+  activeTokens ActiveTokens[]
+}
+
+model ActiveTokens {
+  id         String   @id @default(uuid())
+  tokenValid Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  userID String
+  user   User   @relation(fields: [userID], references: [id], onDelete: Cascade)
+}
+
+model Auth {
+  credentialID        String @id
+  credentialPublicKey String @unique
+  counter             Int    @default(0)
+
+  userID String
+
+  user User @relation(fields: [userID], references: [id], onDelete: Cascade)
+}
+
+model Challenge {
+  challenge String   @id
+  createdAt DateTime @default(now())
+}
+
+model Passwords {
+  id        String   @id @default(uuid())
+  field     String
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [id], references: [id], onDelete: Cascade)
+}
