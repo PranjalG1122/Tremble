@@ -26,13 +26,13 @@ export default function RootLayout({
       <body
         className={
           inter.className +
-          " bg-background-700 text-text-50 min-h-screen w-screen flex flex-col items-center flex-grow px-2"
+          " bg-background-700 text-text-50 min-h-screen flex flex-grow flex-col"
         }
       >
         <Navbar />
-        <div className="min-h-full flex flex-grow w-full items-center justify-center">
+        <main className="h-full w-full flex flex-grow items-center justify-center px-2">
           {children}
-        </div>
+        </main>
         <Footer />
         <ToastContainer
           draggable={false}

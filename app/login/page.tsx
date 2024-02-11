@@ -100,8 +100,8 @@ export default function Login() {
   };
 
   return (
-    <main className="flex flex-col items-center gap-4 max-w-sm w-full">
-      <div className="flex flex-col gap-2 w-full items-center">
+    <div className="flex flex-col items-center gap-4 max-w-sm w-full">
+      <section className="flex flex-col gap-2 w-full items-center">
         <Heading size="l">
           {registerShown
             ? "Get Started with Tremble"
@@ -118,8 +118,8 @@ export default function Login() {
             <XCircle className="text-red-500" />
           )}
         </Text>
-      </div>
-      <div className="flex flex-row items-center w-full">
+      </section>
+      <section className="flex flex-row items-center w-full">
         <button
           className={
             "py-1 text-center w-full rounded-l-sm lg:text-base text-sm " +
@@ -142,7 +142,7 @@ export default function Login() {
         >
           Login
         </button>
-      </div>
+      </section>
 
       <section className="w-full flex flex-col items-center gap-4 border-2 rounded lg:p-8 p-6 border-background-600">
         <div className="flex flex-col items-start w-full gap-2">
@@ -191,6 +191,6 @@ export default function Login() {
           .
         </Text>
       </section>
-    </main>
+    </div>
   );
 }
