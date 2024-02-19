@@ -22,18 +22,18 @@ model ActiveTokens {
   tokenValid Boolean  @default(false)
   createdAt  DateTime @default(now())
 
-  userID String
-  user   User   @relation(fields: [userID], references: [id], onDelete: Cascade)
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Auth {
-  credentialID        String @id
+  credentialId        String @id
   credentialPublicKey String @unique
   counter             Int    @default(0)
 
-  userID String
+  userId String
 
-  user User @relation(fields: [userID], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Challenge {
@@ -43,10 +43,14 @@ model Challenge {
 
 model Passwords {
   id        String   @id @default(uuid())
-  field     String
-  password  String
+  title     String
+  username  String
+  password  Bytes
+  iv        Bytes
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
-  user User @relation(fields: [id], references: [id], onDelete: Cascade)
+  userId String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
