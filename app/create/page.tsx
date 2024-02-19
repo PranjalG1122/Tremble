@@ -8,11 +8,14 @@ import { Button, variants } from "../../components/Button";
 import { Text } from "@/components/Text";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Eye, EyeOff } from "react-feather";
+import { useState } from "react";
 
 export default function Create() {
   const router = useRouter();
 
   const { password, updatePassword } = usePasswordStore((state) => state);
+  const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
 
   const handleCreateNewPassword = async () => {
     const res = await createPassword(password);
@@ -22,9 +25,8 @@ export default function Create() {
       password: "",
     });
     if (!res) return toast.error("Failed to create password");
-
-    router.push("/dashboard");
     toast.success("Password Created");
+    router.push("/dashboard");
   };
   return (
     <form
@@ -41,6 +43,7 @@ export default function Create() {
           title="Title"
           value={password.title}
           spellCheck={false}
+          maxLength={256}
           className={variants({ variant: "input" }) + " w-full"}
           onChange={(e) => {
             updatePassword({
@@ -54,6 +57,7 @@ export default function Create() {
           title="Username"
           value={password.username}
           spellCheck={false}
+          maxLength={256}
           className={variants({ variant: "input" }) + " w-full"}
           onChange={(e) => {
             updatePassword({
@@ -62,19 +66,36 @@ export default function Create() {
             });
           }}
         />
-        <input
-          placeholder="Password"
-          title="Password"
-          value={password.password}
-          spellCheck={false}
-          className={variants({ variant: "input" }) + " w-full"}
-          onChange={(e) => {
-            updatePassword({
-              ...password,
-              password: e.target.value,
-            });
-          }}
-        />
+        <div className="flex flex-row items-center gap-1 w-full">
+          <input
+            placeholder="Password"
+            title="Password"
+            value={password.password}
+            spellCheck={false}
+            maxLength={256}
+            type={isPasswordVisible ? "text" : "password"}
+            className={variants({ variant: "input" }) + " w-full"}
+            onChange={(e) => {
+              updatePassword({
+                ...password,
+                password: e.target.value,
+              });
+            }}
+          />
+          <button
+            type="button"
+            className="bg-background-600 p-2 rounded-sm"
+            onClick={() => {
+              setIsPasswordVisible(!isPasswordVisible);
+            }}
+          >
+            {isPasswordVisible ? (
+              <EyeOff className={variants({ variant: "icon" })} />
+            ) : (
+              <Eye className={variants({ variant: "icon" })} />
+            )}
+          </button>
+        </div>
       </div>
       <Text variant="gray">
         Tremble stores your passwords encrypted. Learn more about it{" "}
