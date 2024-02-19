@@ -12,6 +12,7 @@ import type {
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import { maxAge } from "../utils";
+import { getTokenID } from "./getTokenID";
 
 const prisma = new PrismaClient();
 
@@ -104,13 +105,8 @@ export const verifyRegisterOptions = async (
         verification.registrationInfo;
 
       return await prisma.$transaction(async (tx) => {
-        const cookie = cookies();
-        const token = cookie.get("token");
-        if (!token) return false;
-
-        const { id } = jwt.verify(token.value, process.env.JWT_SECRET!) as {
-          id: string;
-        };
+        const id = getTokenID();
+        if (!id) return false;
 
         const user = await tx.activeTokens.findUniqueOrThrow({
           where: {
@@ -132,7 +128,7 @@ export const verifyRegisterOptions = async (
                 id: user.user.id,
               },
             },
-            credentialID: Buffer.from(credentialID).toString("base64url"),
+            credentialId: Buffer.from(credentialID).toString("base64url"),
             credentialPublicKey:
               Buffer.from(credentialPublicKey).toString("base64url"),
             counter: counter,
