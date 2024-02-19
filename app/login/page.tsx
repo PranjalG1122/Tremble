@@ -144,7 +144,17 @@ export default function Login() {
         </button>
       </section>
 
-      <section className="w-full flex flex-col items-center gap-4 border-2 rounded lg:p-8 p-6 border-background-600">
+      <form
+        className="w-full flex flex-col items-center gap-4 border-2 rounded lg:p-8 p-6 border-background-600"
+        onSubmit={(e) => {
+          e.preventDefault();
+          if (registerShown) {
+            handleRegister(name);
+          } else {
+            handleLogin();
+          }
+        }}
+      >
         <div className="flex flex-col items-start w-full gap-2">
           <Heading>{registerShown ? "Register" : "Login"}</Heading>
           <Text variant="gray">
@@ -167,13 +177,7 @@ export default function Login() {
           />
         ) : null}
         <Button
-          onClick={() => {
-            if (registerShown) {
-              handleRegister(name);
-            } else {
-              handleLogin();
-            }
-          }}
+          type="submit"
           disabled={buttonDisabled && !passkeysAllowed}
           className="w-full"
         >
@@ -190,7 +194,7 @@ export default function Login() {
           </Link>
           .
         </Text>
-      </section>
+      </form>
     </div>
   );
 }
