@@ -45,7 +45,7 @@ export const verifyAuthOptions = async (
     return await prisma.$transaction(async (tx) => {
       const auth = await tx.auth.findUniqueOrThrow({
         where: {
-          credentialID: res.rawId,
+          credentialId: res.rawId,
         },
         include: {
           user: true,
@@ -67,7 +67,7 @@ export const verifyAuthOptions = async (
         expectedOrigin: process.env.EXPECTED_ORIGIN!,
         expectedRPID: process.env.RP_ID!,
         authenticator: {
-          credentialID: Buffer.from(auth.credentialID, "base64url"),
+          credentialID: Buffer.from(auth.credentialId, "base64url"),
           credentialPublicKey: Buffer.from(
             auth.credentialPublicKey,
             "base64url"
@@ -86,7 +86,7 @@ export const verifyAuthOptions = async (
         });
         await tx.auth.update({
           where: {
-            credentialID: Buffer.from(credentialID).toString("base64url"),
+            credentialId: Buffer.from(credentialID).toString("base64url"),
           },
           data: {
             counter: newCounter,
@@ -98,7 +98,7 @@ export const verifyAuthOptions = async (
             tokenValid: true,
             user: {
               connect: {
-                id: auth.userID,
+                id: auth.userId,
               },
             },
           },
