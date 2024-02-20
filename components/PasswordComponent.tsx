@@ -11,13 +11,16 @@ export default function PasswordComponent({
   index,
   passwordData,
   editDialogRef,
+  deleteDialogRef,
 }: {
   index: number;
   passwordData: PasswordsProps;
   editDialogRef: React.RefObject<HTMLDialogElement>;
+  deleteDialogRef: React.RefObject<HTMLDialogElement>;
 }) {
-  const { setCurrentIndex, updatePassword, passwords, currentIndex } =
-    usePasswordStore((state) => state);
+  const { setCurrentIndex, updatePassword, passwords } = usePasswordStore(
+    (state) => state
+  );
 
   return (
     <article className="w-full flex lg:flex-row flex-col lg:items-center items-start gap-2 py-2 justify-between border-b border-background-500 rounded-sm">
@@ -26,7 +29,13 @@ export default function PasswordComponent({
         <Text variant="gray">{passwordData.username}</Text>
       </div>
       <div className="flex flex-row items-center gap-2">
-        <Button variant="iconButton">
+        <Button
+          variant="iconButton"
+          onClick={(e) => {
+            e.preventDefault();
+            navigator.clipboard.writeText(passwordData.password);
+          }}
+        >
           <Copy className={variants({ variant: "icon" })} />
         </Button>
         <Button
@@ -43,7 +52,13 @@ export default function PasswordComponent({
         >
           <Edit className={variants({ variant: "icon" })} />
         </Button>
-        <Button variant="iconButton">
+        <Button
+          variant="iconButton"
+          onClick={() => {
+            setCurrentIndex(index);
+            deleteDialogRef.current?.showModal();
+          }}
+        >
           <Trash className={variants({ variant: "icon" })} />
         </Button>
       </div>
