@@ -19,26 +19,17 @@ export default function CreatePassword({
 
   const { setPasswords, search } = usePasswordStore((state) => state);
 
-  useEffect(() => {
-    updatePassword({
-      title: "",
-      username: "",
-      password: "",
-    });
-  }, []);
-
   const handleCreateNewPassword = async () => {
-    const res = await createPassword(password);
-    updatePassword({
-      title: "",
-      username: "",
-      password: "",
+    const res = await createPassword({
+      passwordId: "",
+      ...password,
     });
     if (!res) return toast.error("Failed to create password");
     toast.success("Password Created");
     await fetchUpdatedPasswords(setPasswords, search);
     dialogRef.current?.close();
   };
+
   return (
     <dialog
       ref={dialogRef}
@@ -49,10 +40,10 @@ export default function CreatePassword({
           username: "",
         });
       }}
-      className="bg-background-700 p-4 text-text-50 border border-background-500 rounded-sm"
+      className="bg-background-700 p-4 text-text-50 border border-background-500 rounded-sm max-w-md w-full"
     >
       <form
-        className="flex flex-col items-start w-full lg:gap-4 gap-2 max-w-md"
+        className="flex flex-col items-start w-full lg:gap-4 gap-2"
         onSubmit={async (e) => {
           e.preventDefault();
           await handleCreateNewPassword();
