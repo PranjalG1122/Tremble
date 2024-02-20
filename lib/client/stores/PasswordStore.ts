@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-type PasswordsProps = {
+export type PasswordsProps = {
   id: string;
   title: string;
   username: string;
@@ -9,15 +9,17 @@ type PasswordsProps = {
   updatedAt: string;
 };
 
-type PasswordProps = {
+export type PasswordProps = {
   title: string;
   username: string;
   password: string;
 };
 
 interface PasswordStoreProps {
-  currentID: string;
-  updateCurrentID: (id: string) => void;
+  search: string;
+  setSearch: (search: string) => void;
+  currentIndex: number;
+  setCurrentIndex: (index: number) => void;
   password: PasswordProps;
   updatePassword: (updatedPassword: PasswordProps) => void;
   passwords: PasswordsProps[];
@@ -25,9 +27,11 @@ interface PasswordStoreProps {
 }
 
 export const usePasswordStore = create<PasswordStoreProps>((set) => ({
-  currentID: "",
-  updateCurrentID: (id) =>
-    set((state) => ({ currentID: (state.currentID = id) })),
+  search: "",
+  setSearch: (search) => set((state) => ({ search: (state.search = search) })),
+  currentIndex: 0,
+  setCurrentIndex: (index) =>
+    set((state) => ({ currentIndex: (state.currentIndex = index) })),
   password: {
     title: "",
     username: "",
