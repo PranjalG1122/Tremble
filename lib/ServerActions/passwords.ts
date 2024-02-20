@@ -50,10 +50,12 @@ const decryptPassword = async (
 };
 
 export const createPassword = async ({
+  passwordId,
   title,
   username,
   password,
 }: {
+  passwordId: string;
   title: string;
   username: string;
   password: string;
@@ -75,8 +77,17 @@ export const createPassword = async ({
       const encryptedData = await encryptPassword(password);
       if (!encryptedData) return false;
 
-      await tx.passwords.create({
-        data: {
+      await tx.passwords.upsert({
+        where: {
+          id: passwordId,
+        },
+        update: {
+          title,
+          username,
+          password: Buffer.from(encryptedData.encryptedPassword),
+          iv: Buffer.from(encryptedData.iv),
+        },
+        create: {
           title,
           username,
           password: Buffer.from(encryptedData.encryptedPassword),
@@ -95,7 +106,7 @@ export const createPassword = async ({
 export const fetchPasswords = async () => {
   try {
     const id = getTokenID();
-    if (!id) return false;
+    if (!id) return null;
 
     const passwords = await prisma.$transaction(async (tx) => {
       const user = await tx.activeTokens.findUniqueOrThrow({
@@ -111,12 +122,6 @@ export const fetchPasswords = async () => {
         where: {
           userId: user.user.id,
         },
-        select: {
-          title: true,
-          username: true,
-          password: true,
-          iv: true,
-        },
       });
 
       return passwords;
@@ -128,15 +133,39 @@ export const fetchPasswords = async () => {
           Buffer.from(password.password),
           Buffer.from(password.iv)
         );
+        if (!decryptedPassword) {
+          return null;
+        }
         return {
+          id: password.id,
           title: password.title,
           username: password.username,
           password: decryptedPassword,
+          createdAt: password.createdAt.toISOString(),
+          updatedAt: password.updatedAt.toISOString(),
         };
       })
     );
   } catch (e) {
     console.error(e);
     return null;
+  }
+};
+
+export const deletePassword = async (passwordId: string) => {
+  try {
+    const id = getTokenID();
+    if (!id) return null;
+
+    await prisma.passwords.delete({
+      where: {
+        id: passwordId,
+      },
+    });
+
+    return true;
+  } catch (e) {
+    console.error(e);
+    return false;
   }
 };
