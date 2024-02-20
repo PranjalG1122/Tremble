@@ -12,6 +12,8 @@ export const variants = cva("rounded-sm font-regular lg:text-base text-sm", {
       link: "text-blue-400 hover:text-blue-300 font-medium transition-all focus:outline-none ",
       input: "px-3 py-2 bg-background-600 text-text-50 focus:outline-none",
       icon: "lg:h-6 lg:w-6 h-5 w-5",
+      iconButton:
+        "bg-background-600 p-2 rounded-sm hover:bg-background-500 transition-all focus:outline-none",
     },
   },
   defaultVariants: {
