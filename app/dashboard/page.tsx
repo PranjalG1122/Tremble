@@ -3,12 +3,13 @@
 import { Button, variants } from "@/components/Button";
 import { Heading } from "@/components/Heading";
 import { usePasswordStore } from "@/lib/client/stores/PasswordStore";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import CreatePassword from "@/components/CreatePassword";
 import { fetchUpdatedPasswords } from "@/lib/client/fetchUpdatedPasswords";
 import EditPassword from "@/components/EditPassword";
 import PasswordComponent from "@/components/PasswordComponent";
 import Delete from "@/components/Delete";
+import { Text } from "@/components/Text";
 
 export default function Dashboard() {
   const createDialogRef = useRef<HTMLDialogElement>(null);
@@ -18,8 +19,10 @@ export default function Dashboard() {
   const { passwords, setPasswords, search, setSearch, updatePassword } =
     usePasswordStore((state) => state);
 
+  const [res, setRes] = useState<boolean>(false);
+
   const fetchUserPasswords = async () => {
-    await fetchUpdatedPasswords(setPasswords, search);
+    setRes(await fetchUpdatedPasswords(setPasswords, search));
   };
 
   useEffect(() => {
@@ -29,10 +32,10 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen w-full max-w-3xl h-full flex flex-col items-center justify-start py-4">
       {/* Change this so that the modeals are only available once updated passwords have been fetched */}
-      {passwords && (
+      {res && (
         <>
           <CreatePassword dialogRef={createDialogRef} />
-          {/* <Delete deleteDialogRef={deleteDialogRef} /> */}
+          <Delete deleteDialogRef={deleteDialogRef} />
           <EditPassword
             editDialogRef={editDialogRef}
             deleteDialogRef={deleteDialogRef}
@@ -62,23 +65,43 @@ export default function Dashboard() {
           </Button>
         </div>
 
-        {(passwords.length > 0 && (
-          <div className="flex flex-col items-center w-full border-t border-background-500">
-            {passwords.map((password, index) => {
-              return (
-                <PasswordComponent
-                  key={password.id}
-                  index={index}
-                  deleteDialogRef={deleteDialogRef}
-                  passwordData={password}
-                  editDialogRef={editDialogRef}
-                />
-              );
-            })}
+        {(res && (
+          <div className="flex flex-col items-center w-full borde border-background-500">
+            {passwords.length > 0 ? (
+              passwords.map((password, i) => {
+                return (
+                  <PasswordComponent
+                    key={password.id}
+                    index={i}
+                    deleteDialogRef={deleteDialogRef}
+                    passwordData={password}
+                    editDialogRef={editDialogRef}
+                  />
+                );
+              })
+            ) : (
+              <div className="w-full py-2 flex items-center justify-center">
+                <Text>Create a new password</Text>
+              </div>
+            )}
           </div>
-        )) ||
-          "loading..."}
+        )) || <LoadingSkeleton />}
       </div>
     </div>
   );
 }
+
+const LoadingSkeleton = () => {
+  return (
+    <div className="flex flex-col items-center gap-2 w-full">
+      {[...Array(3)].map((_, i) => {
+        return (
+          <div
+            key={i}
+            className="w-full h-16 bg-background-600 rounded-sm animate-pulse"
+          ></div>
+        );
+      })}
+    </div>
+  );
+};
