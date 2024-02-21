@@ -61,7 +61,7 @@ export const createPassword = async ({
   password: string;
 }): Promise<boolean> => {
   try {
-    const id = getTokenID();
+    const id = await getTokenID();
     if (!id) return false;
 
     return await prisma.$transaction(async (tx) => {
@@ -105,7 +105,7 @@ export const createPassword = async ({
 
 export const fetchPasswords = async () => {
   try {
-    const id = getTokenID();
+    const id = await getTokenID();
     if (!id) return null;
 
     const passwords = await prisma.$transaction(async (tx) => {
@@ -154,7 +154,7 @@ export const fetchPasswords = async () => {
 
 export const deletePassword = async (passwordId: string) => {
   try {
-    const id = getTokenID();
+    const id = await getTokenID();
     if (!id) return null;
 
     await prisma.passwords.delete({

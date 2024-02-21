@@ -1,14 +1,14 @@
 import { cookies } from "next/headers";
-import jwt from "jsonwebtoken";
+import { verifyTokenJose } from "../joseToken";
 
-export const getTokenID = (): string | null => {
+export const getTokenID = async (): Promise<string | null> => {
   const cookie = cookies();
   const token = cookie.get("token");
   if (!token) return null;
 
-  const { id } = jwt.verify(token.value, process.env.JWT_SECRET!) as {
-    id: string;
-  };
+  const res = await verifyTokenJose(token.value);
 
-  return id;
+  if (!res.payload.id) return null;
+
+  return res.payload.id as string;
 };

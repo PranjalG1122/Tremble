@@ -1,6 +1,6 @@
 "use server";
 
-import { Prisma, PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import {
   generateRegistrationOptions,
   verifyRegistrationResponse,
@@ -10,9 +10,10 @@ import type {
   PublicKeyCredentialCreationOptionsJSON,
 } from "@simplewebauthn/types";
 import { cookies } from "next/headers";
-import jwt from "jsonwebtoken";
+import { SignJWT } from "jose";
 import { maxAge } from "../utils";
 import { getTokenID } from "./getTokenID";
+import { signTokenJose } from "../joseToken";
 
 const prisma = new PrismaClient();
 
@@ -56,15 +57,7 @@ export const registerOptions = async (
         },
       });
 
-      const token = jwt.sign(
-        {
-          id: activeToken.id,
-        },
-        process.env.JWT_SECRET!,
-        {
-          expiresIn: maxAge,
-        }
-      );
+      const token = await signTokenJose(activeToken.id);
 
       cookie.set("token", token, {
         path: "/",
@@ -105,7 +98,7 @@ export const verifyRegisterOptions = async (
         verification.registrationInfo;
 
       return await prisma.$transaction(async (tx) => {
-        const id = getTokenID();
+        const id = await getTokenID();
         if (!id) return false;
 
         const user = await tx.activeTokens.findUniqueOrThrow({

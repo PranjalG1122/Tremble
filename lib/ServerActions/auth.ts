@@ -10,8 +10,8 @@ import type {
   PublicKeyCredentialRequestOptionsJSON,
 } from "@simplewebauthn/types";
 import { cookies } from "next/headers";
-import jwt from "jsonwebtoken";
 import { maxAge } from "../utils";
+import { signTokenJose } from "../joseToken";
 
 const prisma = new PrismaClient();
 
@@ -104,15 +104,7 @@ export const verifyAuthOptions = async (
           },
         });
 
-        const token = jwt.sign(
-          {
-            id: activeToken.id,
-          },
-          process.env.JWT_SECRET!,
-          {
-            expiresIn: maxAge,
-          }
-        );
+        const token = await signTokenJose(activeToken.id);
 
         const cookie = cookies();
         cookie.set("token", token, {
