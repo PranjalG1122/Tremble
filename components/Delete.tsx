@@ -21,7 +21,9 @@ export default function Delete({
     if (!res) return toast.error("Failed to delete password");
     toast.success("Password deleted!");
     deleteDialogRef.current?.close();
-    fetchUpdatedPasswords(setPasswords, search);
+    const updatedPasswords = await fetchUpdatedPasswords(setPasswords, search);
+    if (!updatedPasswords)
+      return toast.error("Failed to fetch updated passwords");
   };
 
   return (

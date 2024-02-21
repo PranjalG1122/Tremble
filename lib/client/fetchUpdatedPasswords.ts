@@ -5,9 +5,12 @@ import { PasswordsProps } from "./stores/PasswordStore";
 export const fetchUpdatedPasswords = async (
   setPasswords: (newPasswords: PasswordsProps[]) => void,
   search: string
-) => {
+): Promise<boolean> => {
   const res = await fetchPasswords();
-  if (!res) return toast.error("Failed to fetch passwords");
+  if (!res) {
+    toast.error("Failed to fetch passwords");
+    return false;
+  }
 
   console.log(res);
 
@@ -16,7 +19,11 @@ export const fetchUpdatedPasswords = async (
     return password.title.toLowerCase().includes(search.toLowerCase());
   });
 
-  if (!filteredPasswords) return toast.error("Failed to fetch passwords");
+  if (!filteredPasswords) {
+    toast.error("Failed to fetch passwords");
+    return false;
+  }
 
   setPasswords(filteredPasswords);
+  return true;
 };

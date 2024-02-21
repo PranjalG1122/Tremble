@@ -26,7 +26,9 @@ export default function CreatePassword({
     });
     if (!res) return toast.error("Failed to create password");
     toast.success("Password Created");
-    await fetchUpdatedPasswords(setPasswords, search);
+    const updatedPasswords = await fetchUpdatedPasswords(setPasswords, search);
+    if (!updatedPasswords)
+      return toast.error("Failed to fetch updated passwords");
     dialogRef.current?.close();
   };
 

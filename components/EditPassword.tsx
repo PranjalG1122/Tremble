@@ -30,7 +30,9 @@ export default function EditPassword({
     });
     if (!res) return toast.error("Failed to update password");
     toast.success("Password Updated");
-    await fetchUpdatedPasswords(setPasswords, search);
+    const updatedPasswords = await fetchUpdatedPasswords(setPasswords, search);
+    if (!updatedPasswords)
+      return toast.error("Failed to fetch updated passwords");
     editDialogRef.current?.close();
   };
 
