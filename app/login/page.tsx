@@ -63,7 +63,7 @@ export default function Login() {
     if (!options) return toast.error("Something went wrong!");
     const response = await startRegistration(options);
     if (!response) return toast.error("Something went wrong!");
-    const result = await verifyRegistrationOptions(options.user.id, response);
+    const result = await verifyRegistrationOptions(options, response);
     if (!result) return toast.error("Something went wrong!");
     router.push("/dashboard");
   };
