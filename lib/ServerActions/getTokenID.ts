@@ -5,6 +5,7 @@ export const getTokenID = async (): Promise<string | null> => {
   const cookie = cookies();
   const token = cookie.get("token");
   if (!token) return null;
+  
 
   const res = await verifyTokenJose(token.value);
 
