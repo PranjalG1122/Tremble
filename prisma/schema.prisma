@@ -18,9 +18,8 @@ model User {
 }
 
 model ActiveTokens {
-  id         String   @id @default(uuid())
-  tokenValid Boolean  @default(false)
-  createdAt  DateTime @default(now())
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
 
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
