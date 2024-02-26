@@ -15,13 +15,10 @@ import { useAuthStore } from "@/lib/client/stores/AuthStore";
 import { toast } from "react-toastify";
 import { startRegistration } from "@simplewebauthn/browser";
 import {
-  registerOptions,
-  verifyRegisterOptions,
+  getRegistrationOptions,
+  verifyRegistrationOptions,
 } from "@/lib/ServerActions/register";
-import {
-  genereateAuthOptions,
-  verifyAuthOptions,
-} from "@/lib/ServerActions/auth";
+import { getAuthOptions, verifyAuthOptions } from "@/lib/ServerActions/auth";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
@@ -53,50 +50,34 @@ export default function Login() {
     })();
   }, []);
 
-  const handleRegister = (name: string) => {
-    if (name.length < 3) {
+  const handleRegister = async (name: string) => {
+    if (name.length < 3)
       return toast.error("Username should be atleast 3 characters long!");
-    }
 
-    if (!VALID_USERNAME.test(name)) {
+    if (!VALID_USERNAME.test(name))
       return toast.error("Username should be alphanumerical!");
-    }
 
     setButtonDisabled(true);
 
-    registerOptions(name)
-      .then((options) => {
-        if (!options) throw new Error();
-        return startRegistration(options);
-      })
-      .then(verifyRegisterOptions)
-      .then((res) => {
-        if (!res) throw new Error();
-        router.push("/dashboard");
-      })
-      .catch((err) => {
-        setButtonDisabled(false);
-        toast.error("Something went wrong!");
-      });
+    const options = await getRegistrationOptions(name);
+    if (!options) return toast.error("Something went wrong!");
+    const response = await startRegistration(options);
+    if (!response) return toast.error("Something went wrong!");
+    const result = await verifyRegistrationOptions(options.user.id, response);
+    if (!result) return toast.error("Something went wrong!");
+    router.push("/dashboard");
   };
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     setButtonDisabled(true);
 
-    genereateAuthOptions()
-      .then((options) => {
-        if (!options) throw new Error();
-        return startAuthentication(options);
-      })
-      .then(verifyAuthOptions)
-      .then((res) => {
-        if (!res) throw new Error();
-        router.push("/dashboard");
-      })
-      .catch((err) => {
-        setButtonDisabled(false);
-        toast.error("Something went wrong!");
-      });
+    const options = await getAuthOptions();
+    if (!options) return toast.error("Something went wrong!");
+    const response = await startAuthentication(options);
+    if (!response) return toast.error("Something went wrong!");
+    const result = await verifyAuthOptions(response);
+    if (!result) return toast.error("Something went wrong!");
+    router.push("/dashboard");
   };
 
   return (
