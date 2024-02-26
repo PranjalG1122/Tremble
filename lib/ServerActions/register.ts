@@ -10,14 +10,12 @@ import type {
   PublicKeyCredentialCreationOptionsJSON,
 } from "@simplewebauthn/types";
 import { cookies } from "next/headers";
-import { SignJWT } from "jose";
 import { maxAge } from "../utils";
-import { getTokenID } from "./getTokenID";
 import { signTokenJose } from "../joseToken";
 
 const prisma = new PrismaClient();
 
-export const registerOptions = async (
+export const getRegistrationOptions = async (
   name: string
 ): Promise<PublicKeyCredentialCreationOptionsJSON | null> => {
   try {
@@ -33,38 +31,10 @@ export const registerOptions = async (
       },
     });
 
-    await prisma.$transaction(async (tx) => {
-      const cookie = cookies();
-      const user = await tx.user.create({
-        data: {
-          name: name,
-        },
-      });
-
-      await tx.challenge.create({
-        data: {
-          challenge: options.challenge,
-        },
-      });
-
-      const activeToken = await tx.activeTokens.create({
-        data: {
-          user: {
-            connect: {
-              id: user.id,
-            },
-          },
-        },
-      });
-
-      const token = await signTokenJose(activeToken.id);
-
-      cookie.set("token", token, {
-        path: "/",
-        maxAge: maxAge,
-        sameSite: "strict",
-        secure: true,
-      });
+    await prisma.challenge.create({
+      data: {
+        challenge: options.challenge,
+      },
     });
 
     return options;
@@ -74,7 +44,8 @@ export const registerOptions = async (
   }
 };
 
-export const verifyRegisterOptions = async (
+export const verifyRegistrationOptions = async (
+  id: string,
   res: RegistrationResponseJSON
 ): Promise<boolean> => {
   try {
@@ -98,43 +69,39 @@ export const verifyRegisterOptions = async (
         verification.registrationInfo;
 
       return await prisma.$transaction(async (tx) => {
-        const id = await getTokenID();
-        if (!id) return false;
-
-        const user = await tx.activeTokens.findUniqueOrThrow({
-          where: {
+        const user = await tx.user.create({
+          data: {
             id: id,
-          },
-          select: {
-            user: {
-              select: {
-                id: true,
+            name: id,
+            auth: {
+              create: {
+                credentialId: Buffer.from(credentialID).toString("base64url"),
+                credentialPublicKey:
+                  Buffer.from(credentialPublicKey).toString("base64url"),
+                counter: counter,
               },
             },
           },
         });
 
-        await tx.auth.create({
+        const newToken = await tx.activeTokens.create({
           data: {
             user: {
               connect: {
-                id: user.user.id,
+                id: user.id,
               },
             },
-            credentialId: Buffer.from(credentialID).toString("base64url"),
-            credentialPublicKey:
-              Buffer.from(credentialPublicKey).toString("base64url"),
-            counter: counter,
           },
         });
 
-        await tx.activeTokens.update({
-          where: {
-            id: id,
-          },
-          data: {
-            tokenValid: true,
-          },
+        const cookie = cookies();
+        const token = await signTokenJose(newToken.id);
+
+        cookie.set("token", token, {
+          path: "/",
+          maxAge: maxAge,
+          sameSite: "strict",
+          secure: true,
         });
 
         await tx.challenge.delete({

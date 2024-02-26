@@ -15,7 +15,7 @@ import { signTokenJose } from "../joseToken";
 
 const prisma = new PrismaClient();
 
-export const genereateAuthOptions =
+export const getAuthOptions =
   async (): Promise<PublicKeyCredentialRequestOptionsJSON | null> => {
     try {
       const options = await generateAuthenticationOptions({
@@ -84,6 +84,7 @@ export const verifyAuthOptions = async (
             challenge: challenge.challenge,
           },
         });
+
         await tx.auth.update({
           where: {
             credentialId: Buffer.from(credentialID).toString("base64url"),
@@ -95,7 +96,6 @@ export const verifyAuthOptions = async (
 
         const activeToken = await tx.activeTokens.create({
           data: {
-            tokenValid: true,
             user: {
               connect: {
                 id: auth.userId,
