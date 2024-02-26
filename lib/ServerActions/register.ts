@@ -45,7 +45,7 @@ export const getRegistrationOptions = async (
 };
 
 export const verifyRegistrationOptions = async (
-  id: string,
+  options: PublicKeyCredentialCreationOptionsJSON,
   res: RegistrationResponseJSON
 ): Promise<boolean> => {
   try {
@@ -71,8 +71,8 @@ export const verifyRegistrationOptions = async (
       return await prisma.$transaction(async (tx) => {
         const user = await tx.user.create({
           data: {
-            id: id,
-            name: id,
+            id: options.user.id,
+            name: options.user.name,
             auth: {
               create: {
                 credentialId: Buffer.from(credentialID).toString("base64url"),
