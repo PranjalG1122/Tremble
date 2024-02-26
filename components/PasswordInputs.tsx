@@ -3,8 +3,13 @@ import { useState } from "react";
 import { Eye, EyeOff } from "react-feather";
 import { Button, variants } from "./Button";
 
-export default function PasswordInputs() {
-  const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
+export default function PasswordInputs({
+  isPasswordVisible,
+  setIsPasswordVisible,
+}: {
+  isPasswordVisible: boolean;
+  setIsPasswordVisible: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
 
   const { password, updatePassword } = usePasswordStore((state) => state);
 

@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { Text } from "@/components/Text";
 import Link from "next/link";
 import { X } from "react-feather";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Heading } from "@/components/Heading";
 import { Button, variants } from "@/components/Button";
 import { fetchUpdatedPasswords } from "@/lib/client/fetchUpdatedPasswords";
@@ -15,9 +15,11 @@ export default function CreatePassword({
 }: {
   dialogRef: React.RefObject<HTMLDialogElement>;
 }) {
-  const { password, updatePassword } = usePasswordStore((state) => state);
+  const { password, updatePassword, setPasswords, search } = usePasswordStore(
+    (state) => state
+  );
 
-  const { setPasswords, search } = usePasswordStore((state) => state);
+  const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
 
   const handleCreateNewPassword = async () => {
     const res = await createPassword({
@@ -41,6 +43,7 @@ export default function CreatePassword({
           title: "",
           username: "",
         });
+        setIsPasswordVisible(false);
       }}
       className="bg-background-700 p-4 text-text-50 border border-background-500 rounded-sm max-w-md w-full"
     >
@@ -62,7 +65,10 @@ export default function CreatePassword({
             <X />
           </button>
         </div>
-        <PasswordInputs />
+        <PasswordInputs
+          isPasswordVisible={isPasswordVisible}
+          setIsPasswordVisible={setIsPasswordVisible}
+        />
         <Text variant="gray">
           Tremble stores your passwords encrypted. Learn more about it{" "}
           <Link href="/docs" className={variants({ variant: "link" })}>

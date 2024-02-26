@@ -12,8 +12,6 @@ export const fetchUpdatedPasswords = async (
     return false;
   }
 
-  console.log(res);
-
   const filteredPasswords: any = res.filter((password) => {
     if (!password) return false;
     return password.title.toLowerCase().includes(search.toLowerCase());

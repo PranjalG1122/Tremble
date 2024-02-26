@@ -6,6 +6,7 @@ import { Button } from "./Button";
 import { createPassword } from "@/lib/ServerActions/passwords";
 import { toast } from "react-toastify";
 import { fetchUpdatedPasswords } from "@/lib/client/fetchUpdatedPasswords";
+import { useState } from "react";
 
 export default function EditPassword({
   editDialogRef,
@@ -22,6 +23,8 @@ export default function EditPassword({
     setPasswords,
     search,
   } = usePasswordStore((state) => state);
+
+  const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
 
   const handleUpdatePassword = async () => {
     const res = await createPassword({
@@ -45,6 +48,7 @@ export default function EditPassword({
           title: "",
           username: "",
         });
+        setIsPasswordVisible(false);
       }}
       className="bg-background-700 p-4 text-text-50 border border-background-500 rounded-sm max-w-md w-full"
     >
@@ -66,7 +70,10 @@ export default function EditPassword({
             <X />
           </button>
         </div>
-        <PasswordInputs />
+        <PasswordInputs
+          isPasswordVisible={isPasswordVisible}
+          setIsPasswordVisible={setIsPasswordVisible}
+        />
         <div className="flex flex-row items-center gap-2 w-full">
           <Button className="w-full" onClick={handleUpdatePassword}>
             Update

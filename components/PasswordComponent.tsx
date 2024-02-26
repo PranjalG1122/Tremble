@@ -6,6 +6,7 @@ import { Heading } from "./Heading";
 import { Text } from "./Text";
 import { Button, variants } from "./Button";
 import { Copy, Edit, Trash } from "react-feather";
+import { toast } from "react-toastify";
 
 export default function PasswordComponent({
   index,
@@ -34,6 +35,7 @@ export default function PasswordComponent({
           onClick={(e) => {
             e.preventDefault();
             navigator.clipboard.writeText(passwordData.password);
+            toast.success("Password Copied");
           }}
         >
           <Copy className={variants({ variant: "icon" })} />
