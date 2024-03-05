@@ -1,36 +1,49 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## Tremble: Securely Manage Your Passwords with Passkeys
 
-## Getting Started
+Tremble is a web-based password manager built for security and ease of use. It
+utilizes the latest **WebAuthn** technology for passwordless logins with
+passkeys, offering a more secure and convenient alternative to traditional
+passwords.
 
-First, run the development server:
+**Key Features:**
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Passkey Support:** Leverage the security of WebAuthn passkeys for secure and
+  convenient logins. Eliminate the need for remembering complex passwords.
+- **Robust Encryption:** Your data is encrypted at rest and in transit using
+  industry-standard algorithms, ensuring its confidentiality even in the event
+  of a breach.
+- **Intuitive Interface:** Manage your passwords effortlessly with a
+  user-friendly interface built with **Tailwind CSS**.
+- **State Management with Zustand:** Leverage the simplicity and scalability of
+  Zustand for efficient application state management.
+- **Tech Stack:**
+  - **Frontend:** Next.js 14, Typescript
+  - **Styling:** Tailwind CSS
+  - **State Management:** Zustand
+  - **Deployment:** Vercel
+  - **Database:** PostgreSQL on Supabase
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+**Getting Started:**
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Visit the Tremble application.
+2. Create an account and set up your master password.
+3. Start adding your passwords and let Tremble handle the security.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+**Security:**
 
-## Learn More
+Tremble prioritizes user data security. Your master password and passkeys never
+leave your device unencrypted, and all communication with the server is
+encrypted using HTTPS.
 
-To learn more about Next.js, take a look at the following resources:
+**Disclaimer:**
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Tremble is still under development and is not intended for production use.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+**Contributing:**
 
-## Deploy on Vercel
+We welcome contributions from the community. Please refer to the project's
+contribution guidelines for more information.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+**License:**
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Tremble is licensed under the MIT License.
